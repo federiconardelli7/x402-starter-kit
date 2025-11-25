@@ -5,7 +5,7 @@ HTTP 402 payment integration with Thirdweb on Avalanche Fuji testnet.
 ## Setup
 
 ```bash
-git clone <repository-url>
+git clone https://github.com/federiconardelli7/x402-starter-kit.git
 cd x402-starter-kit
 npm install
 ```
