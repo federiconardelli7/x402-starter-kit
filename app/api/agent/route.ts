@@ -95,7 +95,7 @@ export async function POST(request: Request) {
     if (!paymentData) {
       console.log("No payment data, returning 402");
       const result = await settlePayment({
-        resourceUrl: .AGENT,
+        resourceUrl: API_ENDPOINTS.AGENT,
         method: "POST",
         paymentData: null,
         payTo: process.env.MERCHANT_WALLET_ADDRESS!,
