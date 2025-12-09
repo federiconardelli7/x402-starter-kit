@@ -44,7 +44,8 @@ Fill in the required values:
 - `NEXT_PUBLIC_THIRDWEB_CLIENT_ID` - Your Thirdweb client ID 
 - `THIRDWEB_SECRET_KEY` - Your Thirdweb secret key 
 - `THIRDWEB_SERVER_WALLET_ADDRESS` - **Facilitator address** (ERC4337 Smart Account address)
-- `MERCHANT_WALLET_ADDRESS` - Payment recipient wallet address 
+- `MERCHANT_WALLET_ADDRESS` - Payment recipient wallet address
+- `OPENROUTER_API_KEY` - Your OpenRouter API key for AI chat ([Get one here](https://openrouter.ai/settings/keys)) 
 
 ## Development
 
@@ -63,11 +64,20 @@ npm start
 
 ## Features
 
+### Human Payment Mode
 - HTTP 402 payment protocol implementation
 - Two payment tiers (Basic: $0.01, Premium: $0.15)
 - Automatic signature normalization for Avalanche Fuji
 - Real-time transaction logging
-- Modern UI with shadcn components
+
+### AI Agent Mode
+- **Token-Based AI Chat**: Pay-per-use LLM chatbot based on actual token usage ($0.001 per 1K tokens, max $0.50 per message)
+- **Autonomous AI Agent**: Pre-authorize a budget for an AI agent to autonomously interact with services and pay with x402 protocol (e.g., cryptocurrency price lookups at $0.02 per call)
+
+### UI
+- Modern interface with shadcn components
+- Mode switcher between Human Payment and AI Agents
+- Real-time payment tracking and transaction logs
 
 ## Technical Stack
 
