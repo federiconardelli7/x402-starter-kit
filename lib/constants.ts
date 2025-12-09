@@ -5,12 +5,11 @@ export const AVALANCHE_FUJI_CHAIN_ID = 43113;
 export const USDC_FUJI_ADDRESS = "0x5425890298aed601595a70AB815c96711a31Bc65" as `0x${string}`;
 
 // API Configuration
-export const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:3000";
 export const API_ENDPOINTS = {
-  BASIC: `${API_BASE_URL}/api/basic`,
-  PREMIUM: `${API_BASE_URL}/api/premium`,
-  AI_CHAT: `${API_BASE_URL}/api/ai-chat`,
-  AGENT: `${API_BASE_URL}/api/agent`,
+  BASIC: "/api/basic",
+  PREMIUM: "/api/premium",
+  AI_CHAT: "/api/ai-chat",
+  AGENT: "/api/agent",
 } as const;
 
 // Payment Amounts (USDC with 6 decimals)
