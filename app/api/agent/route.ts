@@ -1,7 +1,7 @@
 import { settlePayment, facilitator } from "thirdweb/x402";
 import { createThirdwebClient } from "thirdweb";
 import { avalancheFuji } from "thirdweb/chains";
-import { USDC_FUJI_ADDRESS, API_ENDPOINTS, AGENT_AUTHORIZATION } from "@/lib/constants";
+import { USDC_FUJI_ADDRESS, AGENT_AUTHORIZATION } from "@/lib/constants";
 import { parseRequestedToken } from "@/lib/agent-authorization";
 
 const client = createThirdwebClient({
@@ -90,12 +90,13 @@ export async function POST(request: Request) {
 
     const serviceCost = AGENT_AUTHORIZATION.SERVICE_COST;
     const paymentData = request.headers.get("x-payment");
+    const resourceUrl = new URL(request.url).href;
 
     // STEP 1: If no payment, return 402 to trigger x402 flow
     if (!paymentData) {
       console.log("No payment data, returning 402");
       const result = await settlePayment({
-        resourceUrl: API_ENDPOINTS.AGENT,
+        resourceUrl,
         method: "POST",
         paymentData: null,
         payTo: process.env.MERCHANT_WALLET_ADDRESS!,
@@ -122,7 +123,7 @@ export async function POST(request: Request) {
     // STEP 2: Payment exists, settle it
     console.log("Payment data received, settling payment");
     const result = await settlePayment({
-      resourceUrl: API_ENDPOINTS.AGENT,
+      resourceUrl,
       method: "POST",
       paymentData,
       payTo: process.env.MERCHANT_WALLET_ADDRESS!,

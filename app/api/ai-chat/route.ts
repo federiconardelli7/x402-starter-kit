@@ -1,7 +1,7 @@
 import { settlePayment, facilitator } from "thirdweb/x402";
 import { createThirdwebClient } from "thirdweb";
 import { avalancheFuji } from "thirdweb/chains";
-import { USDC_FUJI_ADDRESS, API_ENDPOINTS, OPENROUTER_CONFIG, TOKEN_PRICING } from "@/lib/constants";
+import { USDC_FUJI_ADDRESS, OPENROUTER_CONFIG, TOKEN_PRICING } from "@/lib/constants";
 import { calculateTokenCost, parseOpenRouterUsage, formatUSDCShort, estimateTokens } from "@/lib/token-pricing";
 
 const client = createThirdwebClient({
@@ -37,12 +37,13 @@ export async function POST(request: Request) {
     }
 
     const paymentData = request.headers.get("x-payment");
+    const resourceUrl = new URL(request.url).href;
 
     // STEP 1: If no payment, return 402 with MAX price ($0.50) upfront
     // User must authorize BEFORE we call OpenRouter
     if (!paymentData) {
       const result = await settlePayment({
-        resourceUrl: API_ENDPOINTS.AI_CHAT,
+        resourceUrl,
         method: "POST",
         paymentData: null,
         payTo: process.env.MERCHANT_WALLET_ADDRESS!,
@@ -112,7 +113,7 @@ export async function POST(request: Request) {
     // STEP 4: Settle payment for ACTUAL cost (not max cap)
     // User signed for $0.50, but we only charge what was used
     const result = await settlePayment({
-      resourceUrl: API_ENDPOINTS.AI_CHAT,
+      resourceUrl,
       method: "POST",
       paymentData,
       payTo: process.env.MERCHANT_WALLET_ADDRESS!,
