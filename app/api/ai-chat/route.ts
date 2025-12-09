@@ -70,12 +70,13 @@ export async function POST(request: Request) {
 
     // STEP 2: Payment exists! User has authorized up to $0.50
     // NOW we can safely call OpenRouter
+    const origin = request.headers.get("origin") || request.headers.get("referer") || "https://x402-demo.vercel.app";
     const openRouterResponse = await fetch(OPENROUTER_CONFIG.API_URL, {
       method: "POST",
       headers: {
         "Authorization": `Bearer ${process.env.OPENROUTER_API_KEY}`,
         "Content-Type": "application/json",
-        "HTTP-Referer": process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:3000",
+        "HTTP-Referer": origin,
         "X-Title": "x402 AI Chat Demo",
       },
       body: JSON.stringify({
