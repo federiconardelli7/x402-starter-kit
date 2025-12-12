@@ -1,7 +1,7 @@
 import { settlePayment, facilitator } from "thirdweb/x402";
 import { createThirdwebClient } from "thirdweb";
 import { avalancheFuji } from "thirdweb/chains";
-import { USDC_FUJI_ADDRESS, PAYMENT_AMOUNTS, API_ENDPOINTS } from "@/lib/constants";
+import { USDC_FUJI_ADDRESS, PAYMENT_AMOUNTS } from "@/lib/constants";
 
 const client = createThirdwebClient({
   secretKey: process.env.THIRDWEB_SECRET_KEY!,
@@ -14,9 +14,10 @@ const thirdwebFacilitator = facilitator({
 
 export async function GET(request: Request) {
   const paymentData = request.headers.get("x-payment");
+  const resourceUrl = new URL(request.url).href;
 
   const result = await settlePayment({
-    resourceUrl: API_ENDPOINTS.BASIC,
+    resourceUrl,
     method: "GET",
     paymentData,
     payTo: process.env.MERCHANT_WALLET_ADDRESS!,
