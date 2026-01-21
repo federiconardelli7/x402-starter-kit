@@ -61,18 +61,31 @@ export default function Home() {
 
     try {
       addLog(`Initiating ${tier} payment...`, "info");
+      console.log('=== Client Payment Flow Debug ===');
+      console.log('Wallet:', wallet);
+      console.log('Account:', account?.address);
 
       const normalizedFetch = createNormalizedFetch(AVALANCHE_FUJI_CHAIN_ID);
+      const maxValue = tier === "basic" ? PAYMENT_AMOUNTS.BASIC.bigInt : PAYMENT_AMOUNTS.PREMIUM.bigInt;
+      console.log('Creating fetchWithPay with maxValue:', maxValue.toString());
+
       const fetchWithPay = wrapFetchWithPayment(
         normalizedFetch,
         client,
         wallet,
-        { maxValue: tier === "basic" ? PAYMENT_AMOUNTS.BASIC.bigInt : PAYMENT_AMOUNTS.PREMIUM.bigInt }
+        { maxValue }
       );
+      console.log('fetchWithPay created');
 
       addLog("Requesting payment authorization...", "info");
-      const response = await fetchWithPay(tier === "basic" ? API_ENDPOINTS.BASIC : API_ENDPOINTS.PREMIUM);
+      const endpoint = tier === "basic" ? API_ENDPOINTS.BASIC : API_ENDPOINTS.PREMIUM;
+      console.log('Calling endpoint:', endpoint);
+      const response = await fetchWithPay(endpoint);
+      console.log('Response status:', response.status);
+      console.log('Response headers:', Object.fromEntries(response.headers.entries()));
       const responseData = await response.json();
+      console.log('Response data:', responseData);
+      console.log('=================================');
 
       if (response.status === 200) {
         updateLogStatus("Initiating", "success");

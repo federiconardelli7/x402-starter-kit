@@ -13,6 +13,10 @@ export function normalizeSignatureV(signature: string, chainId: number): string 
   const vHex = signature.slice(130);
   const vValue = parseInt(vHex, 16);
 
+  // Debug logging for signature normalization
+  console.log('=== Signature Normalization ===');
+  console.log('Original v value:', vHex, '=', vValue);
+
   let normalizedV: number;
 
   if (vValue === 0 || vValue === 1) {
@@ -31,6 +35,9 @@ export function normalizeSignatureV(signature: string, chainId: number): string 
     normalizedV = vValue;
   }
 
+  console.log('Normalized v:', normalizedV);
+  console.log('===============================');
+
   // Reconstruct signature with normalized v
   const normalizedSignature = signature.slice(0, 130) + normalizedV.toString(16).padStart(2, '0');
   
@@ -42,15 +49,27 @@ export function normalizeSignatureV(signature: string, chainId: number): string 
  */
 export function createNormalizedFetch(chainId: number): typeof fetch {
   return async (input, init) => {
-    // Extract payment header - check both uppercase and lowercase
+    console.log('=== Normalized Fetch Called ===');
+    console.log('URL:', input);
+    console.log('Init:', JSON.stringify(init, (key, value) =>
+      typeof value === 'bigint' ? value.toString() : value
+    , 2));
+
+    // Extract payment header - check all possible header names (v1 and v2)
     let paymentHeader: string | null = null;
-    
+
     if (init?.headers instanceof Headers) {
-      paymentHeader = init.headers.get('x-payment') || init.headers.get('X-PAYMENT');
+      paymentHeader = init.headers.get('x-payment') || init.headers.get('X-PAYMENT') ||
+                      init.headers.get('payment-signature') || init.headers.get('PAYMENT-SIGNATURE');
+      console.log('Headers (Headers object):', [...init.headers.entries()]);
     } else if (typeof init?.headers === 'object' && init.headers !== null) {
       const headers = init.headers as Record<string, string>;
-      paymentHeader = headers['x-payment'] || headers['X-PAYMENT'];
+      console.log('Headers (plain object):', headers);
+      paymentHeader = headers['x-payment'] || headers['X-PAYMENT'] ||
+                      headers['payment-signature'] || headers['PAYMENT-SIGNATURE'];
     }
+
+    console.log('Payment header present:', paymentHeader ? 'yes' : 'no');
 
     if (paymentHeader) {
       try {
@@ -84,6 +103,9 @@ export function createNormalizedFetch(chainId: number): typeof fetch {
       }
     }
 
-    return fetch(input, init);
+    console.log('=== Making fetch request ===');
+    const result = await fetch(input, init);
+    console.log('Fetch result status:', result.status);
+    return result;
   };
 }

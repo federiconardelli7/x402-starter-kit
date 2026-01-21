@@ -31,6 +31,18 @@ export async function GET(request: Request) {
     facilitator: thirdwebFacilitator,
   });
 
+  // Debug logging for payment settlement
+  console.log('=== Payment Settlement Debug ===');
+  console.log('Status:', result.status);
+  console.log('Payment Data received:', paymentData ? 'yes' : 'no');
+  console.log('Resource URL:', resourceUrl);
+  if (result.status === 200) {
+    console.log('Payment Receipt:', JSON.stringify(result.paymentReceipt, null, 2));
+  } else {
+    console.log('Response Body:', JSON.stringify(result.responseBody, null, 2));
+  }
+  console.log('================================');
+
   if (result.status === 200) {
     return Response.json({
       tier: "basic",

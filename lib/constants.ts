@@ -42,5 +42,5 @@ export const AGENT_AUTHORIZATION = {
 // OpenRouter configuration for AI chat
 export const OPENROUTER_CONFIG = {
   API_URL: "https://openrouter.ai/api/v1/chat/completions",
-  FREE_MODEL: "amazon/nova-2-lite-v1:free",
+  FREE_MODEL: "mistralai/devstral-2512:free",
 } as const;
